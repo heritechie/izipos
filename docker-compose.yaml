@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  mysql:
+    image: mysql:latest
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_PASSWORD=secret
+      - MYSQL_DATABASE=izipos
+    ports:
+      - "3306:3306"
+  api:
+    build:
+      context: api
+      dockerfile: Dockerfile
+    ports:
+      - "3030:3030"
+    depends_on:
+      - mysql 
+    entrypoint: ["/app/wait-for.sh", "mysql:3306", "--", "/app/start.sh"]
+    command: ["/app/main"]
